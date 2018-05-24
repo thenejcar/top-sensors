@@ -13,6 +13,17 @@ def plot_r(components):
     plt.plot(x, y, '-', linewidth=2)
     plt.show()
 
+def plot_R(components):
+    fig = plt.figure()
+    fig.suptitle("R / Euler characteristic")
+    plt.xlabel('Euler characteristic')
+    plt.ylabel('R')
+
+    x = [c[0] for c in components]
+    y = [c[1] for c in components]
+    plt.plot(x, y, '-', linewidth=2)
+    plt.show()
+
 
 def plot_points(points):
     fig = plt.figure()

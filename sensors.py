@@ -1,10 +1,11 @@
 import os
+from collections import defaultdict
 import dionysus
 import numpy as np
 
 from miniball import miniball
 from components import findComponents
-from visualisations import plot_points, plot_r
+from visualisations import plot_points, plot_r, plot_R
 
 
 def optimal_r(points, range_min, range_max):
@@ -40,6 +41,33 @@ def optimal_r(points, range_min, range_max):
     return min_r, components_for_r
 
 
+def optimal_R(points, range_min, range_max):
+    """
+    Computes the optimal Cech parameter R for the given list of points.
+    Parameter needs to be as small as possible and Cech complex needs to have Euler characteristic of 0
+
+    :param points: list of tuples
+    :return: the optimal r parameter and list of (r, n_components) tuples
+    """
+
+    step = (range_max - range_min) / 100
+    euler = []
+
+    R = range_min
+    while R < range_max:
+        c = cech(points, R)
+        e = len(c[0]) - len(c[1]) + len(c[2])
+        euler.append((R, e))
+        print(R, e)
+        if e > 1000:
+            print("Euler characteristic too high, breaking")  # otherwise it takes too much time for no benefit
+            break
+        R += step
+    # find the smallest r that has 1 component
+    min_R = min(euler, key=lambda x: x[1])[0]
+
+    return min_R, euler
+
 def cech(S, R):
     """
     Computes the cech complex for the given point cloud S with radius parameter R
@@ -57,13 +85,11 @@ def cech(S, R):
         if r <= R:
             ch_complex.append(simplex)
 
-    result = {}
+    result = defaultdict(list)
     for s in ch_complex:
         dim = len(s) - 1
-        if dim in result:
-            result[dim].append(tuple(s))
-        else:
-            result[dim] = [tuple(s)]
+        result[dim].append(tuple(s))
+
 
     return result
 
@@ -91,3 +117,7 @@ if __name__ == "__main__":
         r, components = optimal_r(points, 0, 1)
         print("Optimal r for VR complex is %f" % r)
         plot_r(components)
+
+        R, eulers = optimal_R(points, 0.1, 0.6)
+        print("Optimal R for Cech complex is %f" % R)
+        plot_R(eulers)
