@@ -63,8 +63,8 @@ def optimal_R(points, range_min, range_max):
             print("Euler characteristic too high, breaking")  # otherwise it takes too much time for no benefit
             break
         R += step
-    # find the smallest r that has 1 component
-    min_R = min(euler, key=lambda x: x[1])[0]
+    # find the smallest r that has euler characteristic as close to 2 as possible
+    min_R = min(euler, key=lambda x: abs(x[1] -2))[0]
 
     return min_R, euler
 
