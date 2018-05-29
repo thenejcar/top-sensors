@@ -5,7 +5,9 @@ import numpy as np
 
 from miniball import miniball
 from components import findComponents
-from visualisations import plot_points, plot_r, plot_R
+from visualisations import plot_r, plot_R_euler, plot_R_homology, show
+from visualisations_vpython import plot_points
+from homology import homology
 
 
 def optimal_r(points, range_min, range_max):
@@ -22,14 +24,7 @@ def optimal_r(points, range_min, range_max):
 
     r = range_min
     while r < range_max:
-        vr = dionysus.fill_rips(np.array(points), 2, r)
-
-        V, E = [], []  # list of vertices and edges in the complex
-        for s in vr:
-            if len(s) == 1:
-                V.append(int(list(s)[0]))
-            elif len(s) == 2:
-                E.append(tuple(s))
+        V, E = vietoris(points, r)
 
         comps = findComponents(V, E)
 
@@ -39,6 +34,18 @@ def optimal_r(points, range_min, range_max):
     min_r = min(components_for_r, key=lambda x: x[0] if x[1] == 1 else 100 + range_max)[0]
 
     return min_r, components_for_r
+
+
+def vietoris(points, r):
+    vr = dionysus.fill_rips(np.array(points), 2, r)
+
+    V, E = [], []  # list of vertices and edges in the complex
+    for s in vr:
+        if len(s) == 1:
+            V.append(int(list(s)[0]))
+        elif len(s) == 2:
+            E.append(tuple(s))
+    return V, E
 
 
 def optimal_R(points, range_min, range_max):
@@ -51,22 +58,25 @@ def optimal_R(points, range_min, range_max):
     """
 
     step = (range_max - range_min) / 100
-    euler = []
+    homologies = []
 
     R = range_min
     while R < range_max:
         c = cech(points, R)
-        e = len(c[0]) - len(c[1]) + len(c[2])
-        euler.append((R, e))
-        print(R, e)
-        if e > 1000:
-            print("Euler characteristic too high, breaking")  # otherwise it takes too much time for no benefit
+        # e = len(c[0]) - len(c[1]) + len(c[2])
+        H = homology(c)
+        homologies.append((R, H))
+        print(R, H)
+        if len(H) >= 3 and H[1] < -30:
+            # stop when it takes too much time for no benefit
+            print("Betti numbers exploded, stopping the algorithm (hint, take smaller range_max)")
             break
         R += step
-    # find the smallest r that has euler characteristic as close to 2 as possible
-    min_R = min(euler, key=lambda x: abs(x[1] -2))[0]
+    # find the smallest r that has 0th Betti number 1 and 1st Betti number 0
+    min_R = min(homologies, key=lambda x: x[0] if x[1][0] == 1 and x[1][1] <= 0 else 100 + range_max)[0]
 
-    return min_R, euler
+    return min_R, homologies
+
 
 def cech(S, R):
     """
@@ -77,7 +87,7 @@ def cech(S, R):
     :return: dictionary: dimension -> list of simplices
     """
     vr = dionysus.fill_rips(np.array(S), 3, R * 2)
-    vr_complex = [list(s) for s in vr]
+    vr_complex = [list(s) for s in vr if len(s) <= 3]  # only take dimension 3 or lower
     ch_complex = []
 
     for simplex in vr_complex:
@@ -89,7 +99,6 @@ def cech(S, R):
     for s in ch_complex:
         dim = len(s) - 1
         result[dim].append(tuple(s))
-
 
     return result
 
@@ -118,6 +127,13 @@ if __name__ == "__main__":
         print("Optimal r for VR complex is %f" % r)
         plot_r(components)
 
-        R, eulers = optimal_R(points, 0.1, 0.6)
+        _, E = vietoris(points, r)
+        plot_points(points, edges=E)
+
+        # for the Cech complex, start with the optimal r (or just below it)
+        R, homologies = optimal_R(points, (r - 0.1) / 2, 0.3)
         print("Optimal R for Cech complex is %f" % R)
-        plot_R(eulers)
+        plot_R_homology(homologies)
+        plot_points(points, R=R)
+        
+    show()
