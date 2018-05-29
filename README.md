@@ -30,3 +30,9 @@ To generate the Čech complex you can use the MiniBall algorithm.
 ### Data generator
 
 You should also produce a distribution of 50 points on the sphere with parameters _r_ and _R_ as small as possible.
+
+
+# How to run
+Everything is done from the `sensors.py` script.
+
+Dependencies: `python 3`, `numpy`, `dionysus`, `matplotlib`, `vpython`
