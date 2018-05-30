@@ -2,6 +2,7 @@
 # mostly what we needed to implement on lab practice 10 with small adjustments
 
 import itertools
+import dionysus as d
 
 def homology(simplices):
     """
@@ -134,3 +135,23 @@ def find_nonzero(M, s):
             return False, j
 
     return False, -1
+
+
+
+
+
+
+
+def homology_d(complex):
+    flat_simplices = [list(s) for slist in complex.values() for s in slist]
+    f = d.Filtration(flat_simplices)
+    h = d.homology_persistence(f, 2)
+
+    H = [0, 0, 0]
+    dgms = d.init_diagrams(h, f)
+    for i, dgm in enumerate(dgms):
+        if i < 3:
+            H[i] = len(dgm)
+
+    return H
+
