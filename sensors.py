@@ -2,6 +2,7 @@ import os
 from collections import defaultdict
 import dionysus
 import numpy as np
+import random
 
 from miniball import miniball
 from components import findComponents
@@ -67,9 +68,9 @@ def optimal_R(points, range_min, range_max):
         H = homology_d(c)
         homologies.append((R, H))
         print(R, H)
-        if len(H) >= 3 and H[1] <= 0 and H[2] > 1000:
-            # stop when it takes too much time for no benefit
-            print("Stopping the loop, R=", R)
+        if H[0] == 1 and H[1] == 0:
+            # stop when we get the correct Betti numbers
+            print("Stopping the loop, R=", R, "H=", H)
             break
         R += step
 
@@ -127,11 +128,18 @@ def load_points(filename):
         # split by points and split each point into 3 numbers
         return [tuple([float(x) for x in point.split(",")]) for point in string.split("},{")]
 
+def generify(points):
+    r1 = random.uniform(-0.001, 0.001)
+    r2 = random.uniform(-0.001, 0.001)
+    r3 = random.uniform(-0.001, 0.001)
+    return [(p[0] + r1, p[1] + r2, p[2] + r3) for p in points]
+
 
 if __name__ == "__main__":
     for file in os.listdir("data/"):
         print("Computing optimal r and R for coordinates in", file)
         points = load_points("data/" + file)
+        points = generify(points)
         plot_points(points, file)
 
         r, components = optimal_r(points, 0, 1)
@@ -148,6 +156,7 @@ if __name__ == "__main__":
 
         K = cech(points, R)
         print(R, "num of triangles in the complex:", len(K[2]))
-        plot_points(points, file, R=R, complex=K)
+        plot_points(points, file, R=R)
+        plot_points(points, file, complex=K)
 
     show()
