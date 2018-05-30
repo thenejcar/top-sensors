@@ -7,7 +7,7 @@ from miniball import miniball
 from components import findComponents
 from visualisations import plot_r, plot_R_euler, plot_R_homology, show
 from visualisations_vpython import plot_points
-from homology import homology
+from homology import homology, homology_d
 
 
 def optimal_r(points, range_min, range_max):
@@ -64,16 +64,27 @@ def optimal_R(points, range_min, range_max):
     while R < range_max:
         c = cech(points, R)
         # e = len(c[0]) - len(c[1]) + len(c[2])
-        H = homology(c)
+        H = homology_d(c)
         homologies.append((R, H))
         print(R, H)
-        if len(H) >= 3 and H[1] < -30:
+        if len(H) >= 3 and H[1] <= 0 and H[2] > 1000:
             # stop when it takes too much time for no benefit
-            print("Betti numbers exploded, stopping the algorithm (hint, take smaller range_max)")
+            print("Stopping the loop, R=", R)
             break
         R += step
+
+    # TODO  probaj se tole
+    # ne rabimo nujno 0 ciklov
+    # rabimo 0 ciklov na povrsini zemlje, ce so v notranjosti je vseeno
+    # mogoce kaksna finta s tem kdaj se cikel pojavi in kdaj izgine, npr.
+    # da ni nobenega cikla, ki je obstajal preden smo imeli samo eno komponento
+
     # find the smallest r that has 0th Betti number 1 and 1st Betti number 0
-    min_R = min(homologies, key=lambda x: x[0] if x[1][0] == 1 and x[1][1] <= 0 else 100 + range_max)[0]
+    min_betti_0 = min(homologies, key=lambda x: x[1][0])[1][0]
+    results = [h for h in homologies if h[1][0] == min_betti_0]
+    min_betti_1 = min(results, key=lambda x: x[1][1])[1][1]
+    results = [h for h in results if h[1][1] == min_betti_1]
+    min_R = min(results, key=lambda x: x[0])[0]
 
     return min_R, homologies
 
@@ -131,7 +142,7 @@ if __name__ == "__main__":
         plot_points(points, file, edges=E)
 
         # for the Cech complex, start with the optimal r (or just below it)
-        R, homologies = optimal_R(points, (r - 0.1) / 2, 0.3)
+        R, homologies = optimal_R(points, (r - 0.1) / 2, 0.5)
         print("Optimal R for Cech complex is %f" % R)
         plot_R_homology(homologies)
 
