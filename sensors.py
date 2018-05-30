@@ -121,19 +121,22 @@ if __name__ == "__main__":
     for file in os.listdir("data/"):
         print("Computing optimal r and R for coordinates in", file)
         points = load_points("data/" + file)
-        plot_points(points)
+        plot_points(points, file)
 
         r, components = optimal_r(points, 0, 1)
         print("Optimal r for VR complex is %f" % r)
         plot_r(components)
 
         _, E = vietoris(points, r)
-        plot_points(points, edges=E)
+        plot_points(points, file, edges=E)
 
         # for the Cech complex, start with the optimal r (or just below it)
         R, homologies = optimal_R(points, (r - 0.1) / 2, 0.3)
         print("Optimal R for Cech complex is %f" % R)
         plot_R_homology(homologies)
-        plot_points(points, R=R)
-        
+
+        K = cech(points, R)
+        print(R, "num of triangles in the complex:", len(K[2]))
+        plot_points(points, file, R=R, complex=K)
+
     show()
