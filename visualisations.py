@@ -50,7 +50,7 @@ def plot_R_homology(homologies):
     plt.draw()
 
 def plot_R_barcode(diagram):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(25, 25))
     fig.suptitle("Barcode")
     fig.show()
     ax = fig.add_subplot(111)

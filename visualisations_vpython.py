@@ -1,7 +1,7 @@
 from vpython import *
 
 
-def plot_points(points, text, edges=None, R=None, complex=None):
+def draw_earth(points, text, edges=None, R=None, complex=None):
     if edges is not None:
         title = 'Communication between sensors: ' + text
     elif R is not None:
@@ -26,10 +26,12 @@ def plot_points(points, text, edges=None, R=None, complex=None):
     scene.lights.append(distant_light(direction=vec(-d, -d, d), color=color.gray(light_brightness)))
     scene.lights.append(distant_light(direction=vec(-d, -d, -d), color=color.gray(light_brightness)))
 
+    labels = set([])
+
     for p in points:
         sphere(canvas=scene, pos=to_vector(p), radius=0.02, color=color.red)
         if R is not None:
-            sphere(canvas=scene, pos=to_vector(p), radius=R, color=color.yellow, opacity=0.3)
+            sphere(canvas=scene, pos=to_vector(p), radius=R, color=color.green, opacity=0.3)
 
     if edges is not None:
         for e in edges:
@@ -44,6 +46,7 @@ def plot_points(points, text, edges=None, R=None, complex=None):
                 if len(simplex) == 2:
                     # plot the edge
                     plot_edge(scene, points, simplex)
+                    plot_labels(scene, labels, points, simplex)
                 elif len(simplex) == 3:
                     # plot the triangle
                     plot_triangle(scene, points, simplex)
@@ -70,6 +73,11 @@ def plot_triangle(scene, points, t):
         v2=vertex(pos=to_vector(c),  color=color.yellow, opacity=0.3),
     )
 
+def plot_labels(scene, labels, points, simplex):
+    for p in simplex:
+        if p not in labels:
+            labels.add(p)
+            label(canvas=scene, pos=to_vector(points[p]), text=str(p), xoffset=0.2, yoffset=0.2, background=color.white, color=color.black)
 
 def to_vector(p):
     return vector(p[1], p[2], p[0])
