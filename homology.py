@@ -145,7 +145,7 @@ def find_nonzero(M, s):
 def homology_d(complex):
     flat_simplices = [list(s) for slist in complex.values() for s in slist]
     f = d.Filtration(flat_simplices)
-    h = d.homology_persistence(f, 2)
+    h = d.homology_persistence(f, prime=2)
 
     H = [0, 0, 0]
     dgms = d.init_diagrams(h, f)

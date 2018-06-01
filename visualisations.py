@@ -49,6 +49,23 @@ def plot_R_homology(homologies):
     plt.legend()
     plt.draw()
 
+def plot_R_barcode(diagram):
+    fig = plt.figure()
+    fig.suptitle("Barcode")
+    fig.show()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel('R paramters')
+    ax.set_ylabel('components / cycles')
+
+    counter = 0
+    for i, dgm in enumerate(diagram):
+        for pt in dgm:
+            if i == 0:
+                ax.plot([pt.birth, pt.death], [counter, counter], c='r')
+            elif i==1:
+                ax.plot([pt.birth, pt.death], [counter, counter], c='b')
+            counter = counter + 1
+    plt.draw()
 
 def show():
     plt.show()

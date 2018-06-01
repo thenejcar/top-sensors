@@ -65,10 +65,9 @@ def plot_triangle(scene, points, t):
 
     T = triangle(
         canvas=scene,
-        v0=vertex(pos=to_vector(a)),
-        v1=vertex(pos=to_vector(b)),
-        v2=vertex(pos=to_vector(c)),
-        texture=dict(file=textures.gravel)
+        v0=vertex(pos=to_vector(a), color=color.yellow, opacity=0.3),
+        v1=vertex(pos=to_vector(b), color=color.yellow, opacity=0.3),
+        v2=vertex(pos=to_vector(c),  color=color.yellow, opacity=0.3),
     )
 
 
