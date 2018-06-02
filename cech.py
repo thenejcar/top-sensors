@@ -2,11 +2,9 @@ import dionysus
 from homology import homology_d
 from collections import defaultdict
 import numpy as np
-from miniball import miniball
+import miniball
 
-
-
-def optimal_R(points, range_min, range_max, cutoff):
+def optimal_R(points, range_min, range_max):
     """
     Computes the optimal Cech parameter R for the given list of points.
     Parameter needs to be as small as possible and Cech complex needs to have Euler characteristic of 0
@@ -17,11 +15,13 @@ def optimal_R(points, range_min, range_max, cutoff):
 
     step = (range_max - range_min) / 100
     homologies = []
+    eulers = []
+
+    result = None
 
     R = range_min
     filtration = dionysus.Filtration()
     simplex_radius = {}
-    c = None
     while R < range_max:
         c, flat = cech(points, R)
 
@@ -30,23 +30,20 @@ def optimal_R(points, range_min, range_max, cutoff):
                 simplex_radius[tuple(simplex)] = R
                 filtration.append(dionysus.Simplex(list(simplex), R))
 
+        e = len(c[0]) - len(c[1]) + len(c[2])
+        eulers.append(e)
+
         H = homology_d(c)
         homologies.append((R, H))
-        print(R, H, end="")
-        if H[0] == 1:
-            # when we have 1 component, we can start counting the surface cycles
-            num_cycles = find_cycles_on_surface(filtration, cutoff, R)
-            print("cycles on the surface: ", num_cycles)
-            if num_cycles <= 0:
-                print("done, there are no more cycles on the surface")
-                break
-        else:
-            print("")
+        print("R:", R, "H:", H, "e:", e)
+
+        if result is None and H[0] == 1 and H[1] == 0:
+            result = (R, c)
+            break
 
         R += step
 
-
-    return R, homologies, c
+    return result[0], result[1], homologies, eulers
 
 
 def cech(S, R):
@@ -63,14 +60,20 @@ def cech(S, R):
 
     for simplex in vr_complex:
         s_points = [tuple(S[x]) for x in simplex]
-        r, c = miniball(s_points, [])
-        inside = True
-        for a in s_points:
-            if dist(a, c) >= r + 1e-8:  #1e-8 is there for some tolerance to imprecise calcaultions
-                inside = False
-                break
-        if inside:
+        mb = miniball.Miniball(s_points)
+        c = mb.center()
+        r = np.sqrt(mb.squared_radius())
+
+        if r < R:
             ch_complex.append(simplex)
+        # inside = True
+        # for a in s_points:
+        #     if dist(a, c) > r + 1e-8:
+        #         inside = False
+        #         break
+        # if inside:
+        #     ch_complex.append(simplex)
+
 
     result = defaultdict(list)
     resultsFlat = []
@@ -80,7 +83,6 @@ def cech(S, R):
         resultsFlat.append(s)
 
     return result, resultsFlat
-
 
 
 def cech_full_barcode(points, range_min, range_max):
@@ -110,8 +112,6 @@ def cech_full_barcode(points, range_min, range_max):
     return dionysus.init_diagrams(dionysus.homology_persistence(filtration), filtration)
 
 
-
-
 def find_cycles_on_surface(f, cutoff, R_max):
     """
     Count the number of cycles that have not died yet. It only looks at the first 'cutoff' ones
@@ -132,4 +132,3 @@ def find_cycles_on_surface(f, cutoff, R_max):
 
 def dist(a, b):
     return np.linalg.norm(np.array(a) - np.array(b))
-

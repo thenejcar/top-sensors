@@ -1,7 +1,7 @@
 from vpython import *
 
 
-def draw_earth(points, text, edges=None, R=None, complex=None):
+def draw_earth(points, text, edges=None, R=None, complex=None, simplex_centers=None):
     if edges is not None:
         title = 'Communication between sensors: ' + text
     elif R is not None:
@@ -50,7 +50,14 @@ def draw_earth(points, text, edges=None, R=None, complex=None):
                 elif len(simplex) == 3:
                     # plot the triangle
                     plot_triangle(scene, points, simplex)
-        sphere(canvas=scene, pos=vector(0, 0, 0), radius=0.92, color=color.black, shininess=0, opacity=0.5)
+        # sphere(canvas=scene, pos=vector(0, 0, 0), radius=0.92, color=color.black, shininess=0, opacity=0.5)
+        if simplex_centers is not None:
+            for (c, r, s_points) in simplex_centers:
+                sphere(canvas=scene, pos=to_vector(c), radius=r, opacity=0.3, color=color.blue)
+                sphere(canvas=scene, pos=to_vector(c), radius=0.03, opacity=0.4, color=color.green)
+                curve(to_vector(c), to_vector(s_points[0]), color=color.green, radius=0.006, opacity=0.4, canvas=scene)
+                curve(to_vector(c), to_vector(s_points[1]), color=color.green, radius=0.006, opacity=0.4, canvas=scene)
+                curve(to_vector(c), to_vector(s_points[2]), color=color.green, radius=0.006, opacity=0.4, canvas=scene)
     else:
         earth = sphere(canvas=scene, pos=vector(0, 0, 0), radius=1, texture=dict(file=textures.earth), shininess=0)
 
@@ -70,14 +77,17 @@ def plot_triangle(scene, points, t):
         canvas=scene,
         v0=vertex(pos=to_vector(a), color=color.yellow, opacity=0.3),
         v1=vertex(pos=to_vector(b), color=color.yellow, opacity=0.3),
-        v2=vertex(pos=to_vector(c),  color=color.yellow, opacity=0.3),
+        v2=vertex(pos=to_vector(c), color=color.yellow, opacity=0.3),
     )
+
 
 def plot_labels(scene, labels, points, simplex):
     for p in simplex:
         if p not in labels:
             labels.add(p)
-            label(canvas=scene, pos=to_vector(points[p]), text=str(p), xoffset=0.2, yoffset=0.2, background=color.white, color=color.black)
+            label(canvas=scene, pos=to_vector(points[p]), text=str(p), xoffset=0.2, yoffset=0.2, background=color.white,
+                  color=color.black)
+
 
 def to_vector(p):
     return vector(p[1], p[2], p[0])

@@ -3,7 +3,7 @@ import random
 
 from visualisations import plot_r, plot_R_homology, show, plot_R_barcode
 from visualisations_vpython import draw_earth
-from cech import optimal_R, cech_full_barcode
+from cech import optimal_R, cech_full_barcode, cech
 from vietoris import optimal_r, vietoris
 
 
@@ -20,6 +20,7 @@ def load_points(filename):
         # split by points and split each point into 3 numbers
         return [tuple([float(x) for x in point.split(",")]) for point in string.split("},{")]
 
+
 def generify(points):
     r1 = random.uniform(-0.01, 0.01)
     r2 = random.uniform(-0.01, 0.01)
@@ -28,7 +29,16 @@ def generify(points):
 
 
 if __name__ == "__main__":
-    for (file, cutoff) in [("data/sensors01.txt", 100000), ("data/sensors02.txt", 20)]:
+
+    # # plot the barcodes
+    # # this takes some time
+    # for file in ["data/sensors01.txt", "data/sensors02.txt"]:
+    #     points = generify(load_points(file))
+    #     print("plotting the barcode for cech complex")
+    #     plot_R_barcode(cech_full_barcode(points, 0, 0.5), 0.51, file)
+    #     show()
+
+    for file in ["data/sensors01.txt", "data/sensors02.txt"]:
         print("Computing optimal r and R for coordinates in", file)
         points = load_points(file)
         points = generify(points)
@@ -38,18 +48,12 @@ if __name__ == "__main__":
         print("Optimal r for VR complex is %f" % r)
         plot_r(components)
 
-        _, E = vietoris(points, r)
-        draw_earth(points, file, edges=E)
+        vr = vietoris(points, r)
+        draw_earth(points, file, edges=vr[1])
 
-
-        # this only needs to be done once and then analyzed TODO: maybe we can analyze it automatically?
-        #print("plotting the barcode for cech complex")
-        #plot_R_barcode(cech_full_barcode(points, 0, 0.5))
-
-
-        R, homologies, K = optimal_R(points, 0, 0.5, cutoff)
+        R, K, homologies, eulers = optimal_R(points, 0, 0.5)
         print("Optimal R for Cech complex is %f" % R)
-        plot_R_homology(homologies)
+        plot_R_homology(homologies, eulers)
 
         print(R, "num of simplices in the complex 0:", len(K[0]), "1:", len(K[1]), " 2:", len(K[2]))
         draw_earth(points, file, R=R)

@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import dionysus
 import numpy as np
 
@@ -15,9 +17,9 @@ def optimal_r(points, range_min, range_max):
 
     r = range_min
     while r < range_max:
-        V, E = vietoris(points, r)
+        vr = vietoris(points, r)
 
-        comps = findComponents(V, E)
+        comps = findComponents([s[0] for s in vr[0]], vr[1])
 
         components_for_r.append((r, len(comps)))
         if (len(comps) == 1):
@@ -35,13 +37,10 @@ def optimal_r(points, range_min, range_max):
 def vietoris(points, r):
     vr = dionysus.fill_rips(np.array(points), 2, r)
 
-    V, E = [], []  # list of vertices and edges in the complex
+    complex = defaultdict(list)
     for s in vr:
-        if len(s) == 1:
-            V.append(int(list(s)[0]))
-        elif len(s) == 2:
-            E.append(tuple(s))
-    return V, E
+        complex[len(s) - 1].append(tuple(s))
+    return complex
 
 
 def findComponents(V, E):

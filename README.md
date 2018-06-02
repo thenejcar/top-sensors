@@ -33,6 +33,12 @@ You should also produce a distribution of 50 points on the sphere with parameter
 
 
 # How to run
-Everything is done from the `sensors.py` script.
+Program can be started by running the `sensors.py` script. Plots will be shown in separate windows and 3d visualisations will be opened in a web browser.
 
-Dependencies: `python 3`, `numpy`, `dionysus`, `matplotlib`, `vpython`
+
+DThe program requires python version 3 and the following libraries:
+ - `numpy`,
+ - `matplotlib`,
+ - `vpython`,
+ - `dionysus`,
+ - `miniball` (from https://github.com/weddige/miniball)
