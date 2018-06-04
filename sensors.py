@@ -32,11 +32,10 @@ if __name__ == "__main__":
 
     # # plot the barcodes
     # # this takes some time
-    # for file in ["data/sensors01.txt", "data/sensors02.txt"]:
-    #     points = generify(load_points(file))
-    #     print("plotting the barcode for cech complex")
-    #     plot_R_barcode(cech_full_barcode(points, 0, 0.5), 0.51, file)
-    #     show()
+    for file in ["data/sensors01.txt", "data/sensors02.txt"]:
+        points = generify(load_points(file))
+        print("plotting the barcode for cech complex")
+        plot_R_barcode(cech_full_barcode(points, 0, 0.5), 0.51, file)
 
     for file in ["data/sensors01.txt", "data/sensors02.txt"]:
         print("Computing optimal r and R for coordinates in", file)
@@ -57,6 +56,6 @@ if __name__ == "__main__":
 
         print(R, "num of simplices in the complex 0:", len(K[0]), "1:", len(K[1]), " 2:", len(K[2]))
         draw_earth(points, file, R=R)
-        draw_earth(points, file, complex=K)
+        #draw_earth(points, file, complex=K)
 
     show()

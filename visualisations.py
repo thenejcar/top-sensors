@@ -54,7 +54,7 @@ def plot_R_homology(homologies, eulers):
 
 
 def plot_R_barcode(diagram, infinity, filename):
-    fig = plt.figure(figsize=(20, 15))
+    fig = plt.figure(figsize=(15, 10))
     fig.suptitle("Barcode for " + filename)
     fig.show()
     ax = fig.add_subplot(111)
