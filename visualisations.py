@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 
 
-def plot_r(components):
+def plot_r(components, title):
     fig = plt.figure(figsize=(15, 10))
-    fig.suptitle("r / number of components")
+    fig.suptitle("Number of components in VR complex for " + title)
     ax = fig.add_subplot(111)
     ax.set_xlabel('number of components')
     ax.set_ylabel('r parameter')
@@ -15,25 +15,9 @@ def plot_r(components):
     ax.plot(x, y, '-', linewidth=2)
     plt.draw()
 
-
-def plot_R_euler(components):
+def plot_R_homology(homologies, title):
     fig = plt.figure(figsize=(15, 10))
-    fig.suptitle("R / Euler characteristic")
-    ax = fig.add_subplot(111)
-    ax.set_xlabel('Euler characteristic')
-    ax.set_ylabel('R parameter')
-    ax.grid(which='major', linestyle='-')
-    ax.grid(which='minor', linestyle=':')
-
-    x = [c[0] for c in components]
-    y = [c[1] for c in components]
-    ax.plot(x, y, '-', linewidth=2)
-    plt.draw()
-
-
-def plot_R_homology(homologies, eulers):
-    fig = plt.figure(figsize=(15, 10))
-    fig.suptitle("R / Betti numbers")
+    fig.suptitle("Betti numbers of Čech complex for " + title)
     fig.show()
     ax = fig.add_subplot(111)
     ax.set_xlabel('Betti numbers')
@@ -46,16 +30,15 @@ def plot_R_homology(homologies, eulers):
     y_1 = [c[1][1] for c in homologies]
     ax.plot(x, y_0, ls='-', c='r', linewidth=2, label="Betti 0")
     ax.plot(x, y_1, ls='-', c='b', linewidth=2, label="Betti 1")
-    ax.plot(x, eulers, ls='-', c='y', linewidth=2, label="Euler characteristic")
 
     ax.set_ylim(top=100)
     plt.legend()
     plt.draw()
 
 
-def plot_R_barcode(diagram, infinity, filename):
-    fig = plt.figure(figsize=(20, 15))
-    fig.suptitle("Barcode for " + filename)
+def plot_R_barcode(diagram, infinity, title):
+    fig = plt.figure(figsize=(15, 10))
+    fig.suptitle("Barcode for " + title)
     fig.show()
     ax = fig.add_subplot(111)
     ax.set_xlabel('radius')

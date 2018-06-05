@@ -2,6 +2,17 @@ from vpython import *
 
 
 def draw_earth(points, text, edges=None, R=None, complex=None, simplex_centers=None):
+    """
+    Draws all possible 3d visualisations of sensors on the earth
+    :param points:
+    :param text:
+    :param edges:
+    :param R:
+    :param complex:
+    :param simplex_centers:
+    :return:
+    """
+
     if edges is not None:
         title = 'Communication between sensors: ' + text
     elif R is not None:
@@ -50,7 +61,6 @@ def draw_earth(points, text, edges=None, R=None, complex=None, simplex_centers=N
                 elif len(simplex) == 3:
                     # plot the triangle
                     plot_triangle(scene, points, simplex)
-        # sphere(canvas=scene, pos=vector(0, 0, 0), radius=0.92, color=color.black, shininess=0, opacity=0.5)
         if simplex_centers is not None:
             for (c, r, s_points) in simplex_centers:
                 sphere(canvas=scene, pos=to_vector(c), radius=r, opacity=0.3, color=color.blue)

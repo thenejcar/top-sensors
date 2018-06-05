@@ -83,7 +83,9 @@ def sphere_optimisation(points, sigma, T, dT, N0=1000, N_max=10000):
             point.th += dth
             En = energy(points)
             dE = En-Ec
-            print(T, Ec, dE, N_accepted, n_iter)
+
+            if n_iter % 500 == 0:
+                print(T, Ec, dE, N_accepted, n_iter)
 
             if dE < 0:
                 Ec = En
@@ -135,7 +137,35 @@ def visualize_points(opt_points, r):
     plt.tight_layout()
     plt.show()
 
-R = 3
+
+def save_to_file(filename, opt_points, r=1):
+    phis = []
+    thetas = []
+    for p in opt_points:
+        phis.append(p.phi)
+        thetas.append(p.th)
+
+    coss = np.cos
+    sinn = np.sin
+
+    xx = r * coss(phis) * sinn(thetas)
+    yy = r * sinn(phis) * sinn(thetas)
+    zz = r * coss(thetas)
+    points = list(zip(xx, yy, zz))
+    with open(filename, "wt") as f:
+        f.write("{")
+
+        l = len(points)
+        for i, p in enumerate(points):
+            f.write("{%f,%f,%f}" % tuple(p))
+            if i < l - 1:
+                f.write(",")
+        f.write("}\n")
+        f.close()
+
+
+R = 1
 rpoints = create_random_points(50, R)
-opt_points = sphere_optimisation(rpoints, 0.05, 10, 0.1)
+opt_points = sphere_optimisation(rpoints, 0.05, 10, 0.1, N_max=1000)
 visualize_points(opt_points, R)
+save_to_file("data/generated00.txt", opt_points)
