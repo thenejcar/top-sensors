@@ -1,2 +1,5 @@
 __pycache__
 miniball/
+report/*.aux
+report/*.log
+report/*.synctex.gz

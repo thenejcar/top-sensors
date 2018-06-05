@@ -14,14 +14,14 @@ def draw_earth(points, text, edges=None, R=None, complex=None, simplex_centers=N
     """
 
     if edges is not None:
-        title = 'Communication between sensors: ' + text
+        title = '</br>Communication between sensors: ' + text
     elif R is not None:
-        title = 'Ranges of the sensors: ' + text
+        title = '</br>Ranges of the sensors: ' + text
     else:
-        title = 'Sensors on the sphere: ' + text
+        title = '</br>Sensors on the sphere: ' + text
 
     scene = canvas(title=title,
-                   width=800, height=600,
+                   width=1280, height=1280,
                    center=vector(0, 0, 0), background=color.black)
     scene.lights = []
 
@@ -71,6 +71,8 @@ def draw_earth(points, text, edges=None, R=None, complex=None, simplex_centers=N
     else:
         earth = sphere(canvas=scene, pos=vector(0, 0, 0), radius=1, texture=dict(file=textures.earth), shininess=0)
 
+
+    return scene
 
 def plot_edge(scene, points, e):
     a = points[e[0]]
