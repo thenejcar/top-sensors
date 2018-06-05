@@ -1,0 +1,261 @@
+% Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
+%
+% In principle, this file can be redistributed and/or modified under
+% the terms of the GNU Public License, version 2.
+%
+% However, this file is supposed to be a template to be modified
+% for your own needs. For this reason, if you use this file as a
+% template and not specifically distribute it as part of a another
+% package/program, I grant the extra permission to freely copy and
+% modify this file as you see fit and even to delete this copyright
+% notice. 
+
+\documentclass{beamer}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[slovene]{babel}
+
+\selectlanguage{slovene}
+% There are many different themes available for Beamer. A comprehensive
+% list with examples is given here:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% You can uncomment the themes below if you would like to use a different
+% one:
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{boxes}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{default}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+\title{Sensors}
+
+% A subtitle is optional and this may be deleted
+\subtitle{Computational topology - group project}
+
+\author[]{Nejc Kišek, Žan Klaneček}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[] % (optional, but mostly needed)
+{
+
+  Faculty of computer and information science\\
+  University of Ljubljana}
+
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date{June, 2018}
+% - Either use conference name or its abbreviation.
+% - Not really informative to the audience, more for people (including
+%   yourself) who are reading the slides online
+
+\subject{Computational Topology}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+
+
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+% Let's get started
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+% Section and subsections will appear in the presentation overview
+% and table of contents.
+\section{Problem description}
+\subsection{Problem}
+
+\begin{frame}{Problem description}{}
+Number of sensors on the sphere of radius 1:
+\begin{itemize}
+	\item {
+		each sensor gathers data from the surrounding area in the shape of a circle of radius
+		$R$,
+	}
+	\item {
+		each sensor can communicate with other sensors which are at most $r$ away.
+	}
+\end{itemize}
+\end{frame}
+\subsection{Goals}
+\begin{frame}{Goals}{}
+
+\begin{enumerate}
+	\item {Values of $r$ and $R$ are as small as possible.}
+	\item {The sensor network is connected.}
+	\item {The sensor network covers the whole sphere.}
+	\item {Remove obsolete sensors.}
+	\item {Find optimal distribution of 50 sensors on sphere.}
+\end{enumerate}
+
+\end{frame}
+
+\section{Topological solution}
+
+\subsection{Vietoris-Rips complex}
+
+
+
+\begin{frame}{Vietoris-Rips complex}{}
+\textbf{Connected sensor network} $\longrightarrow$ Vietoris-Rips complex $VR_\delta(S)$ is connected.
+  \begin{itemize}
+  	\item {sensors: S $\big(S_i = (r_i, \phi_i, \theta_i)\big)$,}
+  	\item {sensor connections $\{S_i, S_j\} \subset S; d(S_i, S_j) \leq 2\delta$,}
+  	\item {$F \subset S$ is a simplex in $VR_\delta(S)$, if diam $F \leq 2\delta$}.
+  \end{itemize}
+\end{frame}
+\subsection{Čech complex}
+
+\begin{frame}{Čech complex}{}
+\textbf{The sensor network covers the whole sphere} $\longrightarrow$ Euler characteristic of Čech complex should be that of a sphere.
+\begin{itemize}
+	\item {sensors: S $\big(S_i = (r_i, \phi_i, \theta_i)\big)$,}
+	\item {$B_\delta(x)$ closed ball with radius $\delta$ around $x$,}
+	\item {$Č_\delta = \{\sigma \subset S,\cap_{x\in \sigma}B_\delta(x) \neq \emptyset \}$}.
+\end{itemize}
+\end{frame}
+\subsection{Second Subsection}
+
+% You can reveal the parts of a slide one at a time
+% with the \pause command:
+\begin{frame}{Second Slide Title}
+  \begin{itemize}
+  \item {
+    First item.
+    \pause % The slide will pause after showing the first item
+  }
+  \item {   
+    Second item.
+  }
+  % You can also specify when the content should appear
+  % by using <n->:
+  \item<3-> {
+    Third item.
+  }
+  \item<4-> {
+    Fourth item.
+  }
+  % or you can use the \uncover command to reveal general
+  % content (not just \items):
+  \item<5-> {
+    Fifth item. \uncover<6->{Extra text in the fifth item.}
+  }
+  \end{itemize}
+\end{frame}
+
+\section{Second Main Section}
+
+\subsection{Another Subsection}
+
+\begin{frame}{Blocks}
+\begin{block}{Block Title}
+You can also highlight sections of your presentation in a block, with it's own title
+\end{block}
+\begin{theorem}
+There are separate environments for theorems, examples, definitions and proofs.
+\end{theorem}
+\begin{example}
+Here is an example of an example block.
+\end{example}
+\end{frame}
+
+% Placing a * after \section means it will not show in the
+% outline or table of contents.
+\section*{Summary}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+  \item
+    The \alert{first main message} of your talk in one or two lines.
+  \item
+    The \alert{second main message} of your talk in one or two lines.
+  \item
+    Perhaps a \alert{third message}, but not more than that.
+  \end{itemize}
+  
+  \begin{itemize}
+  \item
+    Outlook
+    \begin{itemize}
+    \item
+      Something you haven't solved.
+    \item
+      Something else you haven't solved.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+% All of the following is optional and typically not needed. 
+\appendix
+\section<presentation>*{\appendixname}
+\subsection<presentation>*{For Further Reading}
+
+\begin{frame}[allowframebreaks]
+  \frametitle<presentation>{For Further Reading}
+    
+  \begin{thebibliography}{10}
+    
+  \beamertemplatebookbibitems
+  % Start with overview books.
+
+  \bibitem{Author1990}
+    A.~Author.
+    \newblock {\em Handbook of Everything}.
+    \newblock Some Press, 1990.
+ 
+    
+  \beamertemplatearticlebibitems
+  % Followed by interesting articles. Keep the list short. 
+
+  \bibitem{Someone2000}
+    S.~Someone.
+    \newblock On this and that.
+    \newblock {\em Journal of This and That}, 2(1):50--100,
+    2000.
+  \end{thebibliography}
+\end{frame}
+
+\end{document}
+
+
