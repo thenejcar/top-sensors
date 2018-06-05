@@ -1,5 +1,4 @@
 import dionysus
-from homology import homology_d
 from collections import defaultdict
 import numpy as np
 import miniball
@@ -15,35 +14,24 @@ def optimal_R(points, range_min, range_max):
 
     step = (range_max - range_min) / 100
     homologies = []
-    eulers = []
-
-    result = None
+    c = defaultdict(list)
 
     R = range_min
-    filtration = dionysus.Filtration()
-    simplex_radius = {}
     while R < range_max:
-        c, flat = cech(points, R)
-
-        for simplex in flat:
-            if tuple(simplex) not in simplex_radius:
-                simplex_radius[tuple(simplex)] = R
-                filtration.append(dionysus.Simplex(list(simplex), R))
-
-        e = len(c[0]) - len(c[1]) + len(c[2])
-        eulers.append(e)
+        c = cech(points, R)
 
         H = homology_d(c)
         homologies.append((R, H))
-        print("R:", R, "H:", H, "e:", e)
+        print("\rR:", R, "H:", H, end="")
 
-        if result is None and H[0] == 1 and H[1] == 0:
-            result = (R, c)
-            break
+        if H[0] == 1 and H[1] == 0:
+            print("\rDone, R=", R, "H=", H)
+            return R, c, homologies
 
         R += step
 
-    return result[0], result[1], homologies, eulers
+    print("\rNo ideal R found, returning the last one")
+    return R, c, homologies
 
 
 def cech(S, R):
@@ -66,23 +54,13 @@ def cech(S, R):
 
         if r < R:
             ch_complex.append(simplex)
-        # inside = True
-        # for a in s_points:
-        #     if dist(a, c) > r + 1e-8:
-        #         inside = False
-        #         break
-        # if inside:
-        #     ch_complex.append(simplex)
-
 
     result = defaultdict(list)
-    resultsFlat = []
     for s in ch_complex:
         dim = len(s) - 1
         result[dim].append(tuple(s))
-        resultsFlat.append(s)
 
-    return result, resultsFlat
+    return result
 
 
 def cech_full_barcode(points, range_min, range_max):
@@ -96,7 +74,8 @@ def cech_full_barcode(points, range_min, range_max):
     filtration = dionysus.Filtration()
     simplex_radius = {}
     while R < range_max:
-        _, cech_flat = cech(points, R)
+        c = cech(points, R)
+        cech_flat = [s for dim in c.values() for s in dim]
 
         for simplex in cech_flat:
             if tuple(simplex) not in simplex_radius:  # add the simplices that are new
@@ -106,9 +85,10 @@ def cech_full_barcode(points, range_min, range_max):
         R += step
 
         ctr += 1
-        if ctr % 10 == 0:
-            print(str(ctr) + "%")
+        if ctr % 5 == 0:
+            print("\r",str(ctr) + "%", end="")
 
+    print("\r Done")
     return dionysus.init_diagrams(dionysus.homology_persistence(filtration), filtration)
 
 
@@ -132,3 +112,18 @@ def find_cycles_on_surface(f, cutoff, R_max):
 
 def dist(a, b):
     return np.linalg.norm(np.array(a) - np.array(b))
+
+
+def homology_d(complex):
+    flat_simplices = [list(s) for slist in complex.values() for s in slist]
+    f = dionysus.Filtration(flat_simplices)
+    h = dionysus.homology_persistence(f, prime=2)
+
+    H = [0, 0, 0]
+    dgms = dionysus.init_diagrams(h, f)
+    for i, dgm in enumerate(dgms):
+        if i < 3:
+            H[i] = len(dgm)
+
+    return H
+
