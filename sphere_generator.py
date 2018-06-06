@@ -4,6 +4,7 @@ import random
 import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 from mpl_toolkits.mplot3d import Axes3D
+from sensors import save_points
 
 
 random.seed(1)
@@ -138,34 +139,8 @@ def visualize_points(opt_points, r):
     plt.show()
 
 
-def save_to_file(filename, opt_points, r=1):
-    phis = []
-    thetas = []
-    for p in opt_points:
-        phis.append(p.phi)
-        thetas.append(p.th)
-
-    coss = np.cos
-    sinn = np.sin
-
-    xx = r * coss(phis) * sinn(thetas)
-    yy = r * sinn(phis) * sinn(thetas)
-    zz = r * coss(thetas)
-    points = list(zip(xx, yy, zz))
-    with open(filename, "wt") as f:
-        f.write("{")
-
-        l = len(points)
-        for i, p in enumerate(points):
-            f.write("{%f,%f,%f}" % tuple(p))
-            if i < l - 1:
-                f.write(",")
-        f.write("}\n")
-        f.close()
-
-
 R = 1
 rpoints = create_random_points(50, R)
 opt_points = sphere_optimisation(rpoints, 0.05, 10, 0.1, N_max=1000)
 visualize_points(opt_points, R)
-save_to_file("data/generated00.txt", opt_points)
+save_points("data/generated00.txt", opt_points)

@@ -7,7 +7,8 @@ from visualisations import plot_r, plot_R_homology, show, plot_R_barcode
 from visualisations_vpython import draw_earth
 from cech import optimal_R, cech_full_barcode
 from vietoris import optimal_r, vr_full_barcode
-from optimizer import optimize, optimize_2
+from optimizer import optimize
+import numpy as np
 
 
 def load_points(filename):
@@ -23,6 +24,30 @@ def load_points(filename):
         # split by points and split each point into 3 numbers
         return [tuple([float(x) for x in point.split(",")]) for point in string.split("},{")]
 
+def save_points(filename, opt_points, r=1):
+    phis = []
+    thetas = []
+    for p in opt_points:
+        phis.append(p.phi)
+        thetas.append(p.th)
+
+    coss = np.cos
+    sinn = np.sin
+
+    xx = r * coss(phis) * sinn(thetas)
+    yy = r * sinn(phis) * sinn(thetas)
+    zz = r * coss(thetas)
+    points = list(zip(xx, yy, zz))
+    with open(filename, "wt") as f:
+        f.write("{")
+
+        l = len(points)
+        for i, p in enumerate(points):
+            f.write("{%f,%f,%f}" % tuple(p))
+            if i < l - 1:
+                f.write(",")
+        f.write("}\n")
+        f.close()
 
 def generify(points):
     r1 = random.uniform(-0.01, 0.01)
@@ -76,7 +101,7 @@ if __name__ == "__main__":
         print()
 
         if file == "sensors02":
-            opt_points, opt_vr, opt_cech = optimize_2(points, r, R)
+            opt_points, opt_vr, opt_cech = optimize(points, r, R)
             if opt_vr is not None and opt_cech is not None:
                 print("optimiser used %d/%d points" % (len(opt_points), len(points)))
                 draw_earth(opt_points, "optimized " + file, R=R)

@@ -1,57 +1,14 @@
 from vietoris import vietoris, findComponents
 from cech import cech, homology_d
-import dionysus
-
+import random
 
 def optimize(points, r, R):
-    """
-    Removes the sensors, so that the VR and cech complexes are still ok
+    print("Optimizing", len(points), "points")
+    points_random = optimize_random(points, r, R)
+    # check if we can optimize the best solution further
+    points_optimal = optimize(points_random, r, R)
 
-    :param points: input points
-    :param r: Vietoris Rips parameter
-    :param R: Cech parameter
-    :return: optimized points
-    """
-
-    best_solution = (points, None, None)
-    best_len = 0 # length of skipped sensors in the best possible solution
-
-    for i in range(0, len(points)):
-        for j in range(0, len(points)):
-            if i != j:
-                for k in range(0, len(points)):
-                    if k not in {i, j}:
-                        for l in range(0, len(points)):
-                            if l not in {i, j, k}:
-                                new_points = [p for (ii, p) in enumerate(points) if ii not in {i, j, k, l}]
-                                t, sol = check(new_points, r, R)
-                                if t:
-                                    best_len = 4
-                                    best_solution = sol
-                                    break # best possible solution found, return
-                        if best_len < 4:
-                            new_points = [p for (ii, p) in enumerate(points) if ii not in {i, j, k}]
-                            t, sol = check(new_points, r, R)
-                            if t:
-                                best_len = 3
-                                best_solution = sol
-                        print("k=",k)
-                if best_len < 3:
-                    new_points = [p for (ii, p) in enumerate(points) if ii not in {i, j}]
-                    t, sol = check(new_points, r, R)
-                    if t:
-                        best_len = 2
-                        best_solution = sol
-                print("j=", j)
-        if best_len < 2:
-            new_points = [p for (ii, p) in enumerate(points) if ii != i]
-            t, sol = check(new_points, r, R)
-            if t:
-                best_len = 1
-                best_solution = sol
-        print("i=", i)
-
-    return best_solution
+    return points_optimal
 
 def optimize_2(points, r, R):
     candidates = []
@@ -60,16 +17,48 @@ def optimize_2(points, r, R):
         t, sol = check(pts, r, R)
         if t:
             candidates.append(sol)
-
+        print("\r",i, end="")
+    print("\nGeneration 1 candidates:", len(candidates))
     for g in range(2, 6):
         new_candidates = []
-        for (opt_points, vr, cech) in candidates:
+        for c_i, (opt_points, vr, cech) in enumerate(candidates):
             for i in range(0, len(opt_points)):
                 pts = [p for (j, p) in enumerate(opt_points) if i != j]
                 t, sol = check(pts, r, R)
                 if t:
                     new_candidates.append(sol)
-        print("Generation", str(g), " candidates:", len(new_candidates))
+                print("\r", c_i, " ", i, "candidates:", len(new_candidates), end="                     ")
+        print("\nGeneration", str(g), " candidates:", len(new_candidates), end="                     ")
+        print()
+        candidates = new_candidates
+    print(candidates)
+
+    # return one of the candidates
+    return candidates[0][0]
+
+
+def optimize_random(points, r, R, retries=30, miss_threshold=10):
+
+    best_solution = (points, None, None)
+    for g in range(0, retries):
+        misses = 0
+        pts = [p for p in points]
+        while misses < miss_threshold:
+            random.shuffle(pts)
+            popped = pts.pop()
+            t, sol = check(pts, r, R)
+            if t and len(best_solution[0]) > len(sol[0]):
+                best_solution = sol
+                print("\nnew best, len=" + str(len(best_solution[0])) + "\n")
+            else:
+                pts.append(popped)
+                misses = misses + 1
+            print("\r%d: %d/%d" % (g, misses, miss_threshold), end="                    ")
+
+    print()
+    return best_solution[0]
+
+
 
 def check(points, r, R):
     vr = vietoris(points, r)
