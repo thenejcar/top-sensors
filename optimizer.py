@@ -125,7 +125,7 @@ def optimize_smart(points, r, R, vr, ch):
 
     # perform the brute force search now
     print("Performing the brute force search with dropoff on remaining vertices")
-    opt_points, opt_vr, opt_cech = optimize_2(best_solution[0], can_remove, r, R, 100)
+    opt_points, opt_vr, opt_cech = optimize_2(best_solution[0], can_remove, r, R, 250)
 
     return opt_points, opt_vr, opt_cech
 

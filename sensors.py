@@ -7,7 +7,7 @@ from visualisations import plot_r, plot_R_homology, show, plot_R_barcode
 from visualisations_vpython import draw_earth
 from cech import optimal_R, cech_full_barcode
 from vietoris import optimal_r, vr_full_barcode
-from optimizer import optimize, optimize_2, optimize_smart
+from optimizer import optimize_smart
 import numpy as np
 
 
