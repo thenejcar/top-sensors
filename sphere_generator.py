@@ -138,9 +138,24 @@ def visualize_points(opt_points, r):
     plt.tight_layout()
     plt.show()
 
+def to_coordinates(opt_points, r=1):
+    phis = []
+    thetas = []
+    for p in opt_points:
+        phis.append(p.phi)
+        thetas.append(p.th)
+
+    coss = np.cos
+    sinn = np.sin
+
+    xx = r * coss(phis) * sinn(thetas)
+    yy = r * sinn(phis) * sinn(thetas)
+    zz = r * coss(thetas)
+    points = list(zip(xx, yy, zz))
+    return points
 
 R = 1
 rpoints = create_random_points(50, R)
 opt_points = sphere_optimisation(rpoints, 0.05, 10, 0.1, N_max=1000)
 visualize_points(opt_points, R)
-save_points("data/generated00.txt", opt_points)
+save_points("data/generated00.txt", to_coordinates(opt_points))

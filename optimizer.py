@@ -59,6 +59,7 @@ def optimize_2(points, can_remove, r, R, max=800):
 
 
 def optimize_smart(points, r, R, vr, ch):
+    originals = [p for p in points]
     can_remove = [p for p in points]
 
     # sort the vertices by how close to others they are
@@ -99,35 +100,40 @@ def optimize_smart(points, r, R, vr, ch):
         can_remove = [p for p in can_remove if index[p] not in cutvertex_indices]
     print("Removed points that definitely break the Vietoris Rips complex, remaining:", len(can_remove))
 
-    retries = 80
-    miss_threshold = 7
+    if len(can_remove) > 0:
+        retries = 80
+        miss_threshold = 7
 
-    # randomly try to remove some vertices
-    best_solution = (points, None, None)
-    for g in range(0, retries):
-        misses = 0
-        round_points = [p for p in points]
-        round_best = (round_points, None, None)
-        while misses < miss_threshold:
-            rem = random.choice(can_remove)  # pick one of the points that can be removed
-            round_points = [p for p in round_points if p != rem]
-            t, sol = check(round_points, r, R)
-            if t and len(round_best[0]) > len(sol[0]):
-                round_best = sol
-                if len(round_best[0]) < len(best_solution[0]):
-                    print("\nnew global best, len=" + str(len(round_best[0])))
-            else:
-                misses = misses + 1
-            print("\r%d: %d/%d" % (g, misses, miss_threshold), end="                    ")
-        if len(round_best[0]) < len(best_solution[0]):
-            best_solution = round_best
+        # randomly try to remove some vertices
+        best_solution = (points, None, None)
+        for g in range(0, retries):
+            misses = 0
+            round_points = [p for p in points]
+            round_best = (round_points, None, None)
+            while misses < miss_threshold:
+                rem = random.choice(can_remove)  # pick one of the points that can be removed
+                round_points = [p for p in round_points if p != rem]
+                t, sol = check(round_points, r, R)
+                if t and len(round_best[0]) > len(sol[0]):
+                    round_best = sol
+                    if len(round_best[0]) < len(best_solution[0]):
+                        print("\nnew global best, len=" + str(len(round_best[0])))
+                else:
+                    misses = misses + 1
+                print("\r%d: %d/%d" % (g, misses, miss_threshold), end="                    ")
+            if len(round_best[0]) < len(best_solution[0]):
+                best_solution = round_best
     print()
 
-    # perform the brute force search now
-    print("Performing the brute force search with dropoff on remaining vertices")
-    opt_points, opt_vr, opt_cech = optimize_2(best_solution[0], can_remove, r, R, 250)
+    if len(can_remove) <= 0:
+        print("No points can be removed from the list")
+        return originals, vr, ch
+    else:
+        # perform the brute force search with some dropoff on the remaining simplices
+        print("Performing the brute force search with dropoff on remaining vertices")
+        opt_points, opt_vr, opt_cech = optimize_2(best_solution[0], can_remove, r, R, 250)
 
-    return opt_points, opt_vr, opt_cech
+        return opt_points, opt_vr, opt_cech
 
 
 def dist(a, b):

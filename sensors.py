@@ -25,20 +25,7 @@ def load_points(filename):
         return [tuple([float(x) for x in point.split(",")]) for point in string.split("},{")]
 
 
-def save_points(filename, opt_points, r=1):
-    phis = []
-    thetas = []
-    for p in opt_points:
-        phis.append(p.phi)
-        thetas.append(p.th)
-
-    coss = np.cos
-    sinn = np.sin
-
-    xx = r * coss(phis) * sinn(thetas)
-    yy = r * sinn(phis) * sinn(thetas)
-    zz = r * coss(thetas)
-    points = list(zip(xx, yy, zz))
+def save_points(filename, points):
     with open(filename, "wt") as f:
         f.write("{")
 
