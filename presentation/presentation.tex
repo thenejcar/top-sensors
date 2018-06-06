@@ -109,7 +109,10 @@
 
 \begin{frame}{Problem description}{}
 Number of sensors on the sphere of radius 1 (Earth):
-
+\begin{figure}[!ht]
+	
+	\includegraphics[scale=0.1]{sensors01}
+\end{figure}
 \begin{itemize}
 	\item {
 		each sensor gathers data from the surrounding area in the shape of a circle of radius
@@ -119,15 +122,17 @@ Number of sensors on the sphere of radius 1 (Earth):
 		each sensor can communicate with other sensors which are at most $r$ away.
 	}
 \end{itemize}
+
+
 \end{frame}
 \subsection{Goals}
 \begin{frame}{Goals}{}
 
 \begin{enumerate}
-	\item {Values of $r$ and $R$ are as small as possible.}
 	\item {The sensor network is connected.}
 	\item {The sensor network covers the whole sphere.}
-	\item {Removal of obsolete sensors.}
+	\item {Values of $r$ and $R$ are as small as possible.}
+	\item {There are no obsolete sensors.}
 	\item {Find optimal distribution of 50 sensors on the sphere.}
 \end{enumerate}
 
@@ -137,23 +142,27 @@ Number of sensors on the sphere of radius 1 (Earth):
 
 \subsection{Vietoris-Rips complex}
 
-\begin{frame}{Vietoris-Rips complex}{}
-\textbf{Connected sensor network} $\longrightarrow$ Vietoris-Rips complex $VR_\delta(S)$ is connected.
+\begin{frame}{Vietoris-Rips complex $\longrightarrow r$}{}
+\textbf{Connected sensor network} $\longrightarrow$ Such r so that Vietoris-Rips complex $VR_r(S)$ is connected.
   \begin{itemize}
   	\item {sensors: S $\big(S_i = (r_i, \phi_i, \theta_i)\big)$,}
-  	\item {sensor connections $\{S_i, S_j\} \subset S; d(S_i, S_j) \leq 2\delta$,}
-  	\item {$F \subset S$ is a simplex in $VR_\delta(S)$, if diam $F \leq 2\delta$}.
+  	\item {sensor connections $\{S_i, S_j\} \subset S; d(S_i, S_j) \leq 2r$,}
+  	\item {$F \subset S$ is a simplex in $VR_r(S)$, if diam $F \leq 2r$}.
   \end{itemize}
 \end{frame}
 \subsection{Čech complex}
 
-\begin{frame}{Čech complex}{}
-\textbf{The sensor network covers the whole sphere} $\longrightarrow$ Euler characteristic of Čech complex should be that of a sphere.
+\begin{frame}{Čech complex $\longrightarrow R$}{}
+\textbf{The sensor network covers the whole sphere} $\longrightarrow$ Such R so that Euler characteristic of Čech complex should be that of a sphere.
 \begin{itemize}
 	\item {sensors: S $\big(S_i = (r_i, \phi_i, \theta_i)\big)$,}
-	\item {$B_\delta(x)$ closed ball with radius $\delta$ around $x$,}
-	\item {$Č_\delta = \{\sigma \subset S,\cap_{x\in \sigma}B_\delta(x) \neq \emptyset \}$}.
+	\item {$B_R(x)$ closed ball with radius $R$ around $x$,}
+	\item {$Č_R = \{\sigma \subset S,\cap_{x\in \sigma}B_R(x) \neq \emptyset \}$.\\~\
+	}
 \end{itemize}
+
+In practice, instead of calculating Euler characteristic we checked first two Betti numbers.\\~\
+
 \end{frame}
 
 \section{Results and implementation}
@@ -198,7 +207,7 @@ Distribution of points on the sphere so that parameters $r$ and $R$ are as small
 
 
 \begin{frame}
-  \frametitle<presentation>{Literature}
+  \frametitle<presentation>{Bibliography}
     
   \begin{thebibliography}{99}
 
