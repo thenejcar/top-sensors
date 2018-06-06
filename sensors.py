@@ -7,6 +7,7 @@ from visualisations import plot_r, plot_R_homology, show, plot_R_barcode
 from visualisations_vpython import draw_earth
 from cech import optimal_R, cech_full_barcode
 from vietoris import optimal_r, vr_full_barcode
+from optimizer import optimize, optimize_2
 
 
 def load_points(filename):
@@ -44,7 +45,8 @@ def plot_barcodes():
 
 if __name__ == "__main__":
 
-    for file in ["sensors01.txt", "sensors02.txt", "generated01.txt"]:
+    #for file in ["sensors01.txt", "sensors02.txt", "generated01.txt"]:
+    for file in ["sensors02.txt"]:
         print()
         print("*****************************************************")
         print("***  " + file)
@@ -52,7 +54,7 @@ if __name__ == "__main__":
 
         points = generify(load_points("data/" + file))
         file = file.split(".")[0]
-        scene = draw_earth(points, file)
+        #scene = draw_earth(points, file)
         #scene.delete()
 
         print("Computing the optimal VR complex")
@@ -60,7 +62,7 @@ if __name__ == "__main__":
         print("Optimal r for VR complex is %f" % r)
         print("num of simplices in the complex 0:", len(VR[0]), "1:", len(VR[1]), " 2:", len(VR[2]))
         plot_r(components, file)
-        scene = draw_earth(points, file, edges=VR[1])
+        #scene = draw_earth(points, file, edges=VR[1])
         print()
         #scene.delete()
 
@@ -69,12 +71,21 @@ if __name__ == "__main__":
         print("Optimal R for Cech complex is %f" % R)
         print("num of simplices in the complex 0:", len(C[0]), "1:", len(C[1]), " 2:", len(C[2]))
         plot_R_homology(homologies, file)
-        scene = draw_earth(points, file, R=R)
+        #scene = draw_earth(points, file, R=R)
         #scene.delete()
         print()
 
+        if file == "sensors02":
+            opt_points, opt_vr, opt_cech = optimize_2(points, r, R)
+            if opt_vr is not None and opt_cech is not None:
+                print("optimiser used %d/%d points" % (len(opt_points), len(points)))
+                draw_earth(opt_points, "optimized " + file, R=R)
+                draw_earth(opt_points, "optimized " + file, edges=opt_vr[1])
+
+
+
     # plot the barcodes
-    plot_barcodes()
+    #plot_barcodes()
 
     # show the plots (if not called, they are still saved to pdf files)
-    show()
+    #show()
