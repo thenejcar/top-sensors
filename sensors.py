@@ -7,6 +7,8 @@ from visualisations import plot_r, plot_R_homology, show, plot_R_barcode
 from visualisations_vpython import draw_earth
 from cech import optimal_R, cech_full_barcode
 from vietoris import optimal_r, vr_full_barcode
+from optimizer import optimize, optimize_2, optimize_smart
+import numpy as np
 
 
 def load_points(filename):
@@ -22,6 +24,30 @@ def load_points(filename):
         # split by points and split each point into 3 numbers
         return [tuple([float(x) for x in point.split(",")]) for point in string.split("},{")]
 
+def save_points(filename, opt_points, r=1):
+    phis = []
+    thetas = []
+    for p in opt_points:
+        phis.append(p.phi)
+        thetas.append(p.th)
+
+    coss = np.cos
+    sinn = np.sin
+
+    xx = r * coss(phis) * sinn(thetas)
+    yy = r * sinn(phis) * sinn(thetas)
+    zz = r * coss(thetas)
+    points = list(zip(xx, yy, zz))
+    with open(filename, "wt") as f:
+        f.write("{")
+
+        l = len(points)
+        for i, p in enumerate(points):
+            f.write("{%f,%f,%f}" % tuple(p))
+            if i < l - 1:
+                f.write(",")
+        f.write("}\n")
+        f.close()
 
 def generify(points):
     r1 = random.uniform(-0.01, 0.01)
@@ -29,6 +55,17 @@ def generify(points):
     r3 = random.uniform(-0.01, 0.01)
     return [(p[0] + r1, p[1] + r2, p[2] + r3) for p in points]
 
+def optimize_points(points, r, R, VR, C):
+    opt_points, opt_vr, opt_cech = optimize_smart(points, r, R, VR, C)
+
+    if opt_vr is not None and opt_cech is not None:
+        redundant = [p for p in points if p not in opt_points]
+        print("Redundant sensors: ", redundant)
+        print("optimiser used %d/%d points" % (len(opt_points), len(points)))
+        draw_earth(opt_points, "optimized " + file, R=R)
+        draw_earth(opt_points, "optimized " + file, edges=opt_vr[1])
+    else:
+        print("No redundant sensors detected")
 
 def plot_barcodes():
     # this doesn't need to be run every time, we just need to export the images once
@@ -73,8 +110,13 @@ if __name__ == "__main__":
         #scene.delete()
         print()
 
+        # fund redundant sensors -- this takes a long time
+        #optimize_points(points, r, R, VR, C)
+
+
+
     # plot the barcodes
-    plot_barcodes()
+    #plot_barcodes()
 
     # show the plots (if not called, they are still saved to pdf files)
-    show()
+    #show()
