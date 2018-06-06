@@ -24,6 +24,7 @@ def load_points(filename):
         # split by points and split each point into 3 numbers
         return [tuple([float(x) for x in point.split(",")]) for point in string.split("},{")]
 
+
 def save_points(filename, opt_points, r=1):
     phis = []
     thetas = []
@@ -49,11 +50,13 @@ def save_points(filename, opt_points, r=1):
         f.write("}\n")
         f.close()
 
+
 def generify(points):
     r1 = random.uniform(-0.01, 0.01)
     r2 = random.uniform(-0.01, 0.01)
     r3 = random.uniform(-0.01, 0.01)
     return [(p[0] + r1, p[1] + r2, p[2] + r3) for p in points]
+
 
 def optimize_points(file, points, r, R, VR, C):
     opt_points, opt_vr, opt_cech = optimize_smart(points, r, R, VR, C)
@@ -67,6 +70,7 @@ def optimize_points(file, points, r, R, VR, C):
         save_points("data/optimized_" + file + ".txt", opt_points)
     else:
         print("No redundant sensors detected")
+
 
 def plot_barcodes():
     # this doesn't need to be run every time, we just need to export the images once
@@ -111,9 +115,7 @@ if __name__ == "__main__":
         print()
 
         # find redundant sensors -- this takes a long time
-        #optimize_points(points, r, R, VR, C)
-
-
+        optimize_points(file, points, r, R, VR, C)
 
     # plot the barcodes
     plot_barcodes()
