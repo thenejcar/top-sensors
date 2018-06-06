@@ -3,3 +3,9 @@ miniball/
 report/*.aux
 report/*.log
 report/*.synctex.gz
+presentation/*.aux
+presentation/*.synctex.gz
+presentation/*.log
+presentation/*.out
+presentation/*.toc
+presentation/*.nav

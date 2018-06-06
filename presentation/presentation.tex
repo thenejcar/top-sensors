@@ -312,11 +312,18 @@ Coverage in sensor network for appropriate parameter $R$.
 \end{frame}
 
 
+\subsection{Redundant sensors}
+\begin{frame}{Redundant sensors}{}
+We looked for redundant sensors with a simple algorithm:
+\begin{itemize}
+	\item ignore cut vertices of the VR complex (they separate the network in multiple components),
+	\item ignore points with less than 3 neighbors in radius $R$ (they create holes in Čech complex),
+	\item randomly select points from the remaining list and check if removing them would break our solution
+	\item then, check all ways of removing any vertices from the remaining list, when it is small enough (exhaustive search)
+\end{itemize}
+In this way we got a compromise between finding the best solution and spent time
 
-
-
-
-
+\end{frame}
 
 
 
