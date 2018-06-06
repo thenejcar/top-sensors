@@ -6,6 +6,6 @@
 \beamer@sectionintoc {2}{Topological solution}{5}{0}{2}
 \beamer@subsectionintoc {2}{1}{Vietoris-Rips complex}{5}{0}{2}
 \beamer@subsectionintoc {2}{2}{\IeC {\v C}ech complex}{6}{0}{2}
-\beamer@subsectionintoc {2}{3}{Second Subsection}{7}{0}{2}
-\beamer@sectionintoc {3}{Second Main Section}{13}{0}{3}
-\beamer@subsectionintoc {3}{1}{Another Subsection}{13}{0}{3}
+\beamer@sectionintoc {3}{Results and implementation}{7}{0}{3}
+\beamer@subsectionintoc {3}{1}{Data generator}{7}{0}{3}
+\beamer@subsectionintoc {3}{2}{Algorithm for MC simulated annealing}{8}{0}{3}
