@@ -166,7 +166,15 @@ TODO: malo komentarja na graf
 	  	}
         \caption{Connections between sensors}
 \end{figure}
-
+\section{Redundant sensors}
+Once the parameters of the sensor network $r$ and $R$ were established, we had to check if there are any redundant sensors. Firstly we tried to go through all possible combinations ($n!$), which turned out to be very time demanding. Therefore the removal of redundant sensors was done with the following algorithm:
+\begin{itemize}
+	\item ignore cut vertices of the VR complex (they separate the network in multiple components),
+	\item ignore points with less than 3 neighbors in radius $R$ (they create holes in Čech complex),
+	\item randomly select points from the remaining list and check if removing them would break our solution,
+	\item optionally, check all ways of removing any vertices from the remaining list, if it is small enough (exhaustive search).
+\end{itemize}
+In this way we got a compromise between finding the best solution and spent time.
 \section{Data generator}
 Lastly, lets have a look at the data generator that distributes $n$ points evenly on the surface of a sphere. In order to meet this requirement we should look on points as electrons that are bound on the surface (i.e in spherical coordinates have fixed radium). The natural state would be the state with the lowest electrostatic-potential energy $V$ (eq. (2)). This is due to the fact that electrons repel from each other according to Coulumbs inverse square law (eq. (1))
 
@@ -200,13 +208,12 @@ In this report we will include two generated datasets, for $n = 4$ and for $n = 
     \caption{Even distribution of generated $n$ points on the surface of a sphere.}
 	
 \end{figure}
-\section{Redundant sensors}
-TODO: how we remove the sensors which are not needed
+
 
 \section{Conclusion}
 TODO
 
-\section{References}
+
 \begin{thebibliography}{99}
 	\bibitem{} Vietoris-Rips. \url{https://en.wikipedia.org/wiki/Vietoris_Rips_complex} (5.6.2018).
 	\bibitem{A}Čech-complex. \url{https://en.wikipedia.org/wiki/Cech_complex} (5.6.2018).
