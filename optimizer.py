@@ -100,12 +100,12 @@ def optimize_smart(points, r, R, vr, ch):
         can_remove = [p for p in can_remove if index[p] not in cutvertex_indices]
     print("Removed points that definitely break the Vietoris Rips complex, remaining:", len(can_remove))
 
+    best_solution = (points, None, None)
     if len(can_remove) > 0:
         retries = 80
         miss_threshold = 7
 
         # randomly try to remove some vertices
-        best_solution = (points, None, None)
         for g in range(0, retries):
             misses = 0
             round_points = [p for p in points]
@@ -123,17 +123,19 @@ def optimize_smart(points, r, R, vr, ch):
                 print("\r%d: %d/%d" % (g, misses, miss_threshold), end="                    ")
             if len(round_best[0]) < len(best_solution[0]):
                 best_solution = round_best
+
     print()
+    return best_solution
 
-    if len(can_remove) <= 0:
-        print("No points can be removed from the list")
-        return originals, vr, ch
-    else:
-        # perform the brute force search with some dropoff on the remaining simplices
-        print("Performing the brute force search with dropoff on remaining vertices")
-        opt_points, opt_vr, opt_cech = optimize_2(best_solution[0], can_remove, r, R, 250)
-
-        return opt_points, opt_vr, opt_cech
+    # if len(can_remove) <= 0:
+    #     print("No points can be removed from the list")
+    #     return originals, vr, ch
+    # else:
+    #     # perform the brute force search with some dropoff on the remaining simplices
+    #     print("Performing the brute force search with dropoff on remaining vertices")
+    #     opt_points, opt_vr, opt_cech = optimize_2(best_solution[0], can_remove, r, R, 250)
+    #
+    #     return opt_points, opt_vr, opt_cech
 
 
 def dist(a, b):
@@ -148,7 +150,8 @@ def check(points, r, R):
 
     c = cech(points, R)
     h = homology_d(c)
-    if h[0] != 1 or h[1] != 0:
+    if h[0] == 1 and h[1] == 0:
+        return True, (points, vr, c)
+    else:
         return False, (points, None, None)
 
-    return True, (points, vr, c)

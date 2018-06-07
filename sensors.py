@@ -5,9 +5,9 @@ import random
 # import local functions
 from visualisations import plot_r, plot_R_homology, show, plot_R_barcode
 from visualisations_vpython import draw_earth
-from cech import optimal_R, cech_full_barcode
-from vietoris import optimal_r, vr_full_barcode
-from optimizer import optimize_smart
+from cech import cech, optimal_R, cech_full_barcode
+from vietoris import vietoris, optimal_r, vr_full_barcode
+from optimizer import optimize_smart, dist
 import numpy as np
 
 
@@ -39,9 +39,9 @@ def save_points(filename, points):
 
 
 def generify(points):
-    r1 = random.uniform(-0.01, 0.01)
-    r2 = random.uniform(-0.01, 0.01)
-    r3 = random.uniform(-0.01, 0.01)
+    r1 = random.uniform(-0.001, 0.001)
+    r2 = random.uniform(-0.001, 0.001)
+    r3 = random.uniform(-0.001, 0.001)
     return [(p[0] + r1, p[1] + r2, p[2] + r3) for p in points]
 
 
@@ -58,6 +58,11 @@ def optimize_points(file, points, r, R, VR, C):
     else:
         print("No redundant sensors detected")
 
+def show_optimized(file, r, R):
+    opt_pts = load_points(file)
+    VR = vietoris(opt_pts, r)
+    draw_earth(opt_pts, "optimized points from " + file, edges=VR[1])
+    draw_earth(opt_pts, "optimized points from " + file, R=R)
 
 def plot_barcodes():
     # this doesn't need to be run every time, we just need to export the images once
@@ -81,7 +86,7 @@ if __name__ == "__main__":
 
         points = generify(load_points("data/" + file + ".txt"))
         scene = draw_earth(points, file)
-        #scene.delete()
+        # scene.delete()
 
         print("Computing the optimal VR complex")
         r, VR, components = optimal_r(points, 0, 1)
@@ -90,7 +95,7 @@ if __name__ == "__main__":
         plot_r(components, file)
         scene = draw_earth(points, file, edges=VR[1])
         print()
-        #scene.delete()
+        # scene.delete()
 
         print("Computing the optimal Čech complex")
         R, C, homologies = optimal_R(points, 0, 0.5)
@@ -98,11 +103,12 @@ if __name__ == "__main__":
         print("num of simplices in the complex 0:", len(C[0]), "1:", len(C[1]), " 2:", len(C[2]))
         plot_R_homology(homologies, file)
         scene = draw_earth(points, file, R=R)
-        #scene.delete()
+        # scene.delete()
         print()
 
         # find redundant sensors -- this takes a long time
         optimize_points(file, points, r, R, VR, C)
+        #show_optimized("data/optimized_sensors02.txt", r, R)
 
     # plot the barcodes
     plot_barcodes()
@@ -110,6 +116,6 @@ if __name__ == "__main__":
     # show the plots (if not called, they are still saved to pdf files)
     show()
 
-
-# redundant example for sensors02
+# redundant examples for sensors02
 # [(0.08153072939427779, -0.0674609629388395, -0.9941234825453283), (0.1045781293942778, -0.023768662938839513, -0.9941234825453283), (0.07954352939427779, 0.06862523706116049, -0.9941234825453283), (0.037590929394277786, 0.09470543706116048, -0.9941234825453283), (-0.011729470605722212, 0.09747993706116048, -0.9941234825453283), (-0.0853248706057222, 0.03626663706116049, -0.9941234825453283), (-0.09158117060572221, -0.012733962938839511, -0.9941234825453283), (-0.07357937060572221, -0.05873546293883951, -0.9941234825453283), (-0.03572717060572222, -0.09047506293883952, -0.9941234825453283), (0.012708149394277786, -0.10018186293883952, -0.9941234825453283), (0.05986782939427778, -0.0854792629388395, -0.9941234825453283), (0.039211029394277785, 0.5632665370611605, -0.8244554825453283), (-0.2349480706057222, 0.5094575370611605, -0.8244554825453283), (-0.4497480706057222, 0.3307975370611605, -0.8244554825453283), (-0.5525980706057223, 0.07102733706116049, -0.8244554825453283), (-0.5183170706057223, -0.2062514629388395, -0.8244554825453283), (-0.3552980706057222, -0.4331504629388395, -0.8244554825453283), (-0.1034540706057222, -0.5541184629388395, -0.8244554825453283)]
+# [(0.0720456, 0.0691097, -0.995004), (0.030093, 0.0951899, -0.995004), (-0.0192274, 0.0979644, -0.995004), (-0.0638402, 0.0767537, -0.995004), (-0.0928228, 0.0367511, -0.995004), (-0.0810773, -0.058251, -0.995004), (0.00521022, -0.0996974, -0.995004), (0.0523699, -0.0849948, -0.995004), (0.491515, 0.27791, -0.825336)]

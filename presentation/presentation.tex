@@ -262,12 +262,12 @@ The sensor network should cover the whole sphere.
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[scale=0.19]{used_images/plot_cech_sensors01.pdf}
-		\caption{$R = 0.36$}
+		\caption{$R = 0.355$}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[scale=0.19]{used_images/plot_cech_sensors02.pdf}
-		\caption{$R = 0.32$}
+		\caption{$R = 0.31$}
 	\end{subfigure}%
 	
 \end{figure}
@@ -300,12 +300,12 @@ Coverage in sensor network for appropriate parameter $R$.
 \begin{subfigure}{.5\textwidth}
 \centering
 \includegraphics[scale=0.15]{used_images/coverage01}
-\caption{Sensors 1: $R = 0.36$}
+\caption{Sensors 1: $R = 0.355$}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 \centering
 \includegraphics[scale=0.15]{used_images/coverage02}
-\caption{Sensors 2: $R = 0.32$}
+\caption{Sensors 2: $R = 0.31$}
 \end{subfigure}%
 
 \end{figure}
@@ -319,7 +319,7 @@ We looked for redundant sensors with a simple algorithm:
 	\item ignore cut vertices of the VR complex (they separate the network in multiple components),
 	\item ignore points with less than 3 neighbors in radius $R$ (they create holes in Čech complex),
 	\item randomly select points from the remaining list and check if removing them would break our solution
-	\item then, check all ways of removing any vertices from the remaining list, when it is small enough (exhaustive search)
+	\item optionally, check all ways of removing any vertices from the remaining list, if it is small enough (exhaustive search)
 \end{itemize}
 In this way we got a compromise between finding the best solution and spent time
 
