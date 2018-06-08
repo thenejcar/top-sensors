@@ -2,6 +2,7 @@ __pycache__
 miniball/
 report/*.aux
 report/*.log
+report/*.out
 report/*.synctex.gz
 presentation/*.aux
 presentation/*.synctex.gz
